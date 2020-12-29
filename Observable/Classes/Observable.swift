@@ -128,13 +128,13 @@ extension Observable {
         return observable
     }
     
-    public func map<U>(_ transform: @escaping (T) -> U) -> Observable<U> {
-        let observable = MutableObservable<U>(transform(wrappedValue))
-        
-        _ = self.observe { newValue, _ in
-            observable.wrappedValue = transform(newValue)
-        }
-        
-        return observable
-    }
+//    public func map<U>(_ transform: @escaping (T) -> U) -> Observable<U> {
+//        let observable = MutableObservable<U>(transform(wrappedValue))
+//        
+//        _ = self.observe { newValue, _ in
+//            observable.wrappedValue = transform(newValue)
+//        }
+//        
+//        return observable
+//    }
 }

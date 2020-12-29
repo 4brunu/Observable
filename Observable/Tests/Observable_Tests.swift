@@ -21,6 +21,24 @@ class Observable_Tests: XCTestCase {
         disposal = nil
         super.tearDown()
     }
+
+    func test_whenSubscribing_shouldEmitCurrentValue1() {
+        let exp = expectation(description: "")
+        let observable = Observable(0)
+        
+        var newValueResult: String?
+        
+        observable
+            .map(String.init)
+            .observe { newValue, _ in
+            newValueResult = newValue
+            exp.fulfill()
+        }.add(to: &disposal)
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(newValueResult, "0")
+        XCTAssert(true)
+    }
     
     func test_whenSubscribing_shouldEmitCurrentValue() {
         let exp = expectation(description: "")
@@ -118,6 +136,26 @@ class Observable_Tests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(newValueResult, 1)
+        XCTAssert(true)
+    }
+    
+    func test_whenUpdatingValueUsingBackgroundThread_shouldReturnNewValue1() {
+        let exp = expectation(description: "")
+        exp.expectedFulfillmentCount = 2
+        let observable = MutableObservable(0)
+        var newValueResult: String?
+        
+        observable
+            .map(String.init)
+            .observe(.global()) { newValue, _ in
+            newValueResult = newValue
+            exp.fulfill()
+        }.add(to: &disposal)
+        
+        observable.wrappedValue = 1
+        
+        wait(for: [exp], timeout: 10.0)
+        XCTAssertEqual(newValueResult, "1")
         XCTAssert(true)
     }
     
